@@ -16,116 +16,126 @@ export class SoupService {
 
   constructor(private logService: LogService) {}
 
-  /**
-   * Find Occurrences from left to right using TARGET constant to find matches in regExp
-   */
-  private countLeftRight(): number {
-    let counter = 0;
-    const regFinder = new RegExp(TARGET, 'g');
-    for (let i = 0; i < this.inputData.dimensionX; i++) {
-      const line = this.inputData.matrix[i].join('');
-      const occurrences = line.match(regFinder);
-      if(occurrences) {
-        counter += occurrences.length;
-      }
-    }
-    return counter;
+  private getHorizontalWords(): string[] {
+    const words = this.inputData.matrix.map((word: string[]) => {
+      return word.join('');
+    });
+
+    console.log('horizontal: ', words);
+    return words;
   }
 
-  /**
-   * Find Occurrences from right to left using TARGET constant reversed to find matches in regExp
-   */
-  private countRightLeft(): number {
-    let counter = 0;
-    const reversedTarget = [...TARGET].reverse().join('');
-    const regFinder = new RegExp(reversedTarget, 'g');
-    for (let i = 0; i < this.inputData.dimensionX; i++) {
-      const line = this.inputData.matrix[i].join('');
-      const occurrences = line.match(regFinder);
-      if(occurrences) {
-        counter += occurrences.length;
-      }
-    }
-    return counter;
-  }
-
-  private countUpDown(): number {
-    let counter = 0;
-    const regFinder = new RegExp(TARGET, 'g');
+  private getVerticalWords(): string[] {
+    const lines = [];
     for (let j = 0; j < this.inputData.dimensionY; j++) {
       let line = '';
       for (let i = 0; i < this.inputData.dimensionX; i++) {
         line += this.inputData.matrix[i][j];
       }
-      const occurrences = line.match(regFinder);
-      if(occurrences) {
-        counter += occurrences.length;
-      }
+      lines.push(line);
     }
-    return counter;
+    console.log('vertical: ', lines);
+
+    return lines;
   }
 
-  private countDownUp(): number {
-    let counter = 0;
-    const reversedTarget = [...TARGET].reverse().join('');
-    const regFinder = new RegExp(reversedTarget, 'g');
-
-    for (let j = 0; j < this.inputData.dimensionY; j++) {
-      let line = '';
-      for (let i = 0; i < this.inputData.dimensionX; i++) {
-        line += this.inputData.matrix[i][j];
-      }
-      const occurrences = line.match(regFinder);
-      if(occurrences) {
-        counter += occurrences.length;
-      }
-    }
-    return counter;
+  public max(a: number, b: number): number {
+    return a > b ? a : b;
   }
 
-  private countDiagonalLeftRight(): number {
-    /*var arrAcc = [];
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        var acc = '';
-        for (let k = 0; k < 3; k++) {
+  private getDiagonals(): string[] {
+    const words = [];
+    const maxValue = this.max(
+      this.inputData.dimensionX,
+      this.inputData.dimensionY,
+    );
+    console.log(maxValue);
+    for (let i = 0; i < this.inputData.dimensionX; i = i + 2) {
+      for (let j = 0; j < this.inputData.dimensionY; j++) {
+        let word = '';
+
+        for (let k = 0; k < maxValue; k++) {
           try {
-            acc += rr2[i+k][j+k] ? rr2[i+k][j+k] : '';
-          }catch (e) {
+            word += this.inputData.matrix[i + k][j + k]
+              ? this.inputData.matrix[i + k][j + k].trim()
+              : '';
+          } catch (e) {
             // Ignoring
           }
         }
-        arrAcc.push(acc);
+
+        if (word.length >= 3) {
+          console.log('word: ', word);
+          words.push(word);
+        }
       }
-    }*/
+      console.log('\n');
+    }
+    // console.log('diagonals: ', words);
+    return words;
   }
 
-  private countDiagonalRightLeft(): number {
-
+  private getDiagonalsInverted(): string[] {
+    const words = [];
+    const maxValue = this.max(
+      this.inputData.dimensionX,
+      this.inputData.dimensionY,
+    );
+    for (let i = 0; i < this.inputData.dimensionX; i++) {
+      for (let j = 0; j < this.inputData.dimensionY; j = j + 2) {
+        let word = '';
+        for (let k = 0; k < maxValue; k++) {
+          try {
+            word += this.inputData.matrix[i + k][j - k]
+              ? this.inputData.matrix[i + k][j - k]
+              : '';
+          } catch (e) {
+            // Ignoring
+          }
+        }
+        if (word.length >= 3) {
+          words.push(word);
+        }
+      }
+    }
+    console.log('diagonalsInverted: ', words);
+    return words;
   }
 
-  private countDiagonalInverseLeftRight(): number {
+  private countGivenWords(words: string[]): number {
+    let counter = 0;
+    const regFinder = new RegExp(TARGET, 'g');
 
-  }
+    for (const word of words) {
+      // console.log('word: ', word);
 
-  private countDiagonalInverseRightLeft(): number {
+      const matches = word.match(regFinder);
+      if (matches) {
+        counter += matches.length;
+      }
 
+      const wordInverted = word.split('').reverse().join('');
+
+      // console.log('wordInverted: ', wordInverted);
+
+      const matchesInverted = wordInverted.match(regFinder);
+      if (matchesInverted) {
+        counter += matchesInverted.length;
+      }
+    }
+
+    console.log('counter: ', counter);
+    return counter;
   }
 
   public countOIEWord(input: InputStruct): number {
-
     this.inputData = input;
     let accumulator = 0;
-    accumulator += this.countLeftRight();
-    accumulator += this.countRightLeft();
-    accumulator += this.countUpDown();
-    accumulator += this.countDownUp();
-    accumulator += this.countDiagonalLeftRight()
-    accumulator += this.countDiagonalRightLeft();
-    accumulator += this.countDiagonalInverseLeftRight();
-    accumulator += this.countDiagonalInverseRightLeft();
+    // accumulator += this.countGivenWords(this.getHorizontalWords());
+    // accumulator += this.countGivenWords(this.getVerticalWords());
+    accumulator += this.countGivenWords(this.getDiagonals());
+    accumulator += this.countGivenWords(this.getDiagonalsInverted());
 
     return accumulator;
   }
-
 }
