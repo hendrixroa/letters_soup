@@ -13,8 +13,6 @@ export const parseToInputStruct = (nameFile: string): InputStruct => {
     .split(' ')
     .map((dimension) => Number(dimension.trim()));
 
-  console.log('dimensions: ', dimensions);
-
   const isValidDimensions = dimensions.some((dimension) => {
     return typeof dimension == 'number' || dimension >= 1 || dimension <= 100;
   });
@@ -37,8 +35,9 @@ export const parseToInputStruct = (nameFile: string): InputStruct => {
     for (let j = 0; j < dimensions[1]; j++) {
       matrix[i][j] = line[j];
     }
-    counter = counter + 1;
+    counter += 1;
   }
+
   return {
     dimensionX: dimensions[0],
     dimensionY: dimensions[1],
