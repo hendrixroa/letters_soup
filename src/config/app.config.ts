@@ -1,4 +1,4 @@
-import { loadConfig, str, url, port, json } from '@/shared/loadConfig';
+import { loadConfig, str, json } from '@/shared/loadConfig';
 
 export const APPConfig = loadConfig({
   logLevel: {
