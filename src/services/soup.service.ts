@@ -20,8 +20,6 @@ export class SoupService {
     const words = this.inputData.matrix.map((word: string[]) => {
       return word.join('');
     });
-
-    console.log('horizontal: ', words);
     return words;
   }
 
@@ -34,7 +32,6 @@ export class SoupService {
       }
       lines.push(line);
     }
-    console.log('vertical: ', lines);
 
     return lines;
   }
@@ -44,41 +41,40 @@ export class SoupService {
   }
 
   private getDiagonals(): string[] {
+    const positionsMarked = [];
     const words = [];
     const maxValue = this.max(
       this.inputData.dimensionX,
       this.inputData.dimensionY,
     );
-    console.log(maxValue);
+
     for (let i = 0; i < this.inputData.dimensionX; i = i + 2) {
       for (let j = 0; j < this.inputData.dimensionY; j++) {
         let word = '';
 
-        for (let k = 0; k < maxValue; k++) {
-          try {
-            word += this.inputData.matrix[i + k][j + k]
-              ? this.inputData.matrix[i + k][j + k].trim()
-              : '';
-          } catch (e) {
-            // Ignoring
+        if (!positionsMarked.find((pos) => pos === `${i}${j}`)) {
+          for (let k = 0; k < maxValue; k++) {
+            try {
+              word += this.inputData.matrix[i + k][j + k]
+                ? this.inputData.matrix[i + k][j + k].trim()
+                : '';
+              positionsMarked.push(`${i + k}${j + k}`);
+            } catch (e) {
+              // Ignoring
+            }
           }
         }
 
         if (word.length >= 3) {
-          console.log('word: ', word);
           words.push(word);
         }
       }
-      console.log('\n');
     }
-    // console.log('diagonals: ', words);
     return words;
   }
 
   private getDiagonalsInverted(): string[] {
-    /*
-     * I need to mark the positions already visited, in the third for, we need to mark the (i,j) positions visited to avoid repetitions and optimize the the algorithm
-     * */
+    const positionsMarked = [];
     const words = [];
     const maxValue = this.max(
       this.inputData.dimensionX,
@@ -87,21 +83,24 @@ export class SoupService {
     for (let i = 0; i < this.inputData.dimensionX; i = i + 2) {
       for (let j = 0; j < this.inputData.dimensionY; j++) {
         let word = '';
-        for (let k = 0; k < maxValue; k++) {
-          try {
-            word += this.inputData.matrix[i + k][j - k]
-              ? this.inputData.matrix[i + k][j - k].trim()
-              : '';
-          } catch (e) {
-            // Ignoring
+        if (!positionsMarked.find((pos) => pos === `${i}${j}`)) {
+          for (let k = 0; k < maxValue; k++) {
+            try {
+              word += this.inputData.matrix[i + k][j - k]
+                ? this.inputData.matrix[i + k][j - k].trim()
+                : '';
+              positionsMarked.push(`${i + k}${j - k}`);
+            } catch (e) {
+              // Ignoring
+            }
           }
         }
+
         if (word.length >= 3) {
           words.push(word);
         }
       }
     }
-    console.log('diagonalsInverted: ', words);
     return words;
   }
 
@@ -110,8 +109,6 @@ export class SoupService {
     const regFinder = new RegExp(TARGET, 'g');
 
     for (const word of words) {
-      // console.log('word: ', word);
-
       const matches = word.match(regFinder);
       if (matches) {
         counter += matches.length;
@@ -119,23 +116,25 @@ export class SoupService {
 
       const wordInverted = word.split('').reverse().join('');
 
-      // console.log('wordInverted: ', wordInverted);
-
       const matchesInverted = wordInverted.match(regFinder);
       if (matchesInverted) {
         counter += matchesInverted.length;
       }
     }
-
-    console.log('counter: ', counter);
     return counter;
   }
 
   public countOIEWord(input: InputStruct): number {
+    if (input.dimensionY === 1 && input.dimensionY === 1) {
+      // Weird case
+      return 0;
+    }
+
     this.inputData = input;
     let accumulator = 0;
-    // accumulator += this.countGivenWords(this.getHorizontalWords());
-    // accumulator += this.countGivenWords(this.getVerticalWords());
+
+    accumulator += this.countGivenWords(this.getHorizontalWords());
+    accumulator += this.countGivenWords(this.getVerticalWords());
     accumulator += this.countGivenWords(this.getDiagonals());
     accumulator += this.countGivenWords(this.getDiagonalsInverted());
 

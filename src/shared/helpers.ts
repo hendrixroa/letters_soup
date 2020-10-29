@@ -27,15 +27,20 @@ export const parseToInputStruct = (nameFile: string): InputStruct => {
     matrix.push(Array.from({ length: dimensions[1] }, (v, i) => ''));
   }
 
-  let counter = 0;
-  for (let i = 0; i < dimensions[0]; i++) {
-    const line: string[] = contentSplit[counter + 1]
-      .split('')
-      .map((item) => item.trim());
-    for (let j = 0; j < dimensions[1]; j++) {
-      matrix[i][j] = line[j];
+  if (dimensions[0] === 1 && dimensions[1] === 1) {
+    // Weird case
+    matrix[0][0] = contentSplit[1];
+  } else {
+    let counter = 0;
+    for (let i = 0; i < dimensions[0]; i++) {
+      const line: string[] = contentSplit[counter + 1]
+        .split('')
+        .map((item) => item.trim());
+      for (let j = 0; j < dimensions[1]; j++) {
+        matrix[i][j] = line[j];
+      }
+      counter += 1;
     }
-    counter += 1;
   }
 
   return {

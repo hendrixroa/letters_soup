@@ -18,7 +18,7 @@ async function bootstrap() {
 
   try {
     logService.info('Hello Soup!');
-    const data = parseToInputStruct('case_5x5.txt');
+    const data = parseToInputStruct('case_1x1.txt');
     console.log('input: ', data);
     const count = soupService.countOIEWord(data);
     console.log('count: ', count);
