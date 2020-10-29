@@ -76,18 +76,21 @@ export class SoupService {
   }
 
   private getDiagonalsInverted(): string[] {
+    /*
+     * I need to mark the positions already visited, in the third for, we need to mark the (i,j) positions visited to avoid repetitions and optimize the the algorithm
+     * */
     const words = [];
     const maxValue = this.max(
       this.inputData.dimensionX,
       this.inputData.dimensionY,
     );
-    for (let i = 0; i < this.inputData.dimensionX; i++) {
-      for (let j = 0; j < this.inputData.dimensionY; j = j + 2) {
+    for (let i = 0; i < this.inputData.dimensionX; i = i + 2) {
+      for (let j = 0; j < this.inputData.dimensionY; j++) {
         let word = '';
         for (let k = 0; k < maxValue; k++) {
           try {
             word += this.inputData.matrix[i + k][j - k]
-              ? this.inputData.matrix[i + k][j - k]
+              ? this.inputData.matrix[i + k][j - k].trim()
               : '';
           } catch (e) {
             // Ignoring
