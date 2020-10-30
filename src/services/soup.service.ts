@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { LogService } from '@/services/log.service';
-
 export interface InputStruct {
   dimensionX: number;
   dimensionY: number;
@@ -13,8 +11,6 @@ export const TARGET = 'OIE';
 @Injectable()
 export class SoupService {
   private inputData: InputStruct;
-
-  constructor(private logService: LogService) {}
 
   private getHorizontalWords(): string[] {
     const words = this.inputData.matrix.map((word: string[]) => {

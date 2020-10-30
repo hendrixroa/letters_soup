@@ -17,11 +17,9 @@ async function bootstrap() {
   const soupService = app.get(SoupService);
 
   try {
-    logService.info('Hello Soup!');
-    const data = parseToInputStruct('case_1x1.txt');
-    console.log('input: ', data);
+    const data = parseToInputStruct('case_7x2.txt');
     const count = soupService.countOIEWord(data);
-    console.log('count: ', count);
+    console.log(count);
 
     process.exit(0);
   } catch (e) {
