@@ -11,12 +11,7 @@ dev_app:
     APP=$(APP) \
     TS_NODE_TRANSPILE_ONLY=true \
     yarn nodemon --exec \
-    yarn env-cmd --no-override -f ./env/.env yarn env-cmd --no-override -f ./env/$(APP).env yarn ts-node -r tsconfig-paths/register src/apps/$(APP)/main.ts | yarn pino-pretty -c -t -l
-
-dev_app_debug:
-	NODE_ENV=development \
-	APP=$(APP) \
-	yarn env-cmd --no-override -f ./env/.env yarn env-cmd --no-override -f ./env/$(APP).env yarn nest start $(APP) --debug --watch | yarn pino-pretty -c -t
+    yarn env-cmd --no-override -f ./env/.test.env yarn ts-node -r tsconfig-paths/register src/apps/$(APP)/main.ts | yarn pino-pretty -c -t -l
 ################################################################################
 # BUILD
 ################################################################################

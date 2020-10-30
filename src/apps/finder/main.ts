@@ -17,9 +17,25 @@ async function bootstrap() {
   const soupService = app.get(SoupService);
 
   try {
-    const data = parseToInputStruct('case_7x2.txt');
-    const count = soupService.countOIEWord(data);
-    console.log(count);
+    const dataCase1 = parseToInputStruct('case_1x1.txt');
+    const countCase1 = soupService.countOIEWord(dataCase1);
+    console.log(countCase1);
+
+    const dataCase2 = parseToInputStruct('case_1x10.txt');
+    const countCase2 = soupService.countOIEWord(dataCase2);
+    console.log(countCase2);
+
+    const dataCase3 = parseToInputStruct('case_3x3.txt');
+    const countCase3 = soupService.countOIEWord(dataCase3);
+    console.log(countCase3);
+
+    const dataCase4 = parseToInputStruct('case_5x5.txt');
+    const countCase4 = soupService.countOIEWord(dataCase4);
+    console.log(countCase4);
+
+    const dataCase5 = parseToInputStruct('case_7x2.txt');
+    const countCase5 = soupService.countOIEWord(dataCase5);
+    console.log(countCase5);
 
     process.exit(0);
   } catch (e) {
